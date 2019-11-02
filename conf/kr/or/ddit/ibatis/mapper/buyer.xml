@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap     
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="buyer">
+	<typeAlias alias="buyerVO" type="kr.or.ddit.vo.BuyerVO"/>
+	<!-- <select id="getAllBuyer" resultClass="buyerVO" >
+		select * from buyer
+		where buyer_delete = 'n'
+	</select> -->
+	<select id="getAllBuyer" resultClass="java.util.HashMap">
+		select
+		a.BUYER_ID       as BUYER_ID,     
+		a.BUYER_NAME     as BUYER_NAME,    
+		a.BUYER_LGU      as BUYER_LGU,     
+		a.BUYER_BANK     as BUYER_BANK,    
+		a.BUYER_BANKNO   as BUYER_BANKNO,  
+		a.BUYER_BANKNAME as BUYER_BANKNAME,
+		a.BUYER_ZIP      as BUYER_ZIP,     
+		a.BUYER_ADD1     as BUYER_ADD1,    
+		a.BUYER_ADD2     as BUYER_ADD2,    
+		a.BUYER_COMTEL   as BUYER_COMTEL,  
+		a.BUYER_FAX      as BUYER_FAX,     
+		a.BUYER_MAIL     as BUYER_MAIL,    
+		a.BUYER_CHARGER  as BUYER_CHARGER, 
+		a.BUYER_TELEXT   as BUYER_TELEXT,  
+		a.BUYER_DELETE   as BUYER_DELETE,  
+		b.LPROD_NM       as LPROD_NM      
+		from buyer a, lprod b
+		where buyer_lgu = lprod_gu
+		and buyer_delete='n'
+	</select>
+	<select id="getBuyerInfo" parameterClass="String" resultClass="buyerVO">
+		select * from buyer
+		where buyer_id = #buyer_id#
+		 and buyer_delete = 'n'
+	</select>
+	<update id="updateBuyerInfo" parameterClass="buyerVO">
+		update buyer
+		set buyer_id           = #buyer_id#,
+			buyer_name         = #buyer_name#,
+			buyer_lgu          = #buyer_lgu#,
+			buyer_bank         = #buyer_bank#,
+			buyer_bankno       = #buyer_bankno#,
+			buyer_bankname     = #buyer_bankname#,
+			buyer_zip          = #buyer_zip#,
+			buyer_add1         = #buyer_add1#,
+			buyer_add2         = #buyer_add2#,
+			buyer_comtel       = #buyer_comtel#,
+			buyer_fax          = #buyer_fax#,
+			buyer_mail         = #buyer_mail#,
+			buyer_charger      = #buyer_charger#,
+			buyer_telext       = #buyer_telext#
+		where buyer_id = #buyer_id#
+	</update>
+	<delete id="deleteBuyerInfo" parameterClass="String">
+		update buyer
+		set buyer_delete = 'y'
+		where buyer_id = #buyer_id#
+	</delete>
+	<insert id="insertBuyerInfo" parameterClass="buyerVO">
+		insert into buyer(buyer_id, buyer_name, buyer_lgu, buyer_charger, buyer_bank, buyer_add1, buyer_add2, buyer_comtel, buyer_fax, buyer_mail)
+		values(#buyer_id#, #buyer_name#, #buyer_lgu#, #buyer_charger#, #buyer_bank#, #buyer_add1#, #buyer_add2#, #buyer_comtel#, #buyer_fax#, #buyer_mail#)
+	</insert>
+	<select id="lprodForBuyer" parameterClass="String" resultClass="java.util.HashMap">
+	select distinct b.lprod_gu as lprod_gu,
+	        b.lprod_nm as lprod_nm,
+	        'P'||(to_number(substr(max(buyer_id),2))+1) as buyer_id
+	    from prod a, lprod b, buyer c
+	    where a.prod_lgu = b.lprod_gu
+	    and c.buyer_lgu = b.lprod_gu
+	    and a.prod_name like '%'||#prod_name#||'%'
+	    group by b.lprod_gu, b.lprod_nm
+	</select>
+</sqlMap>

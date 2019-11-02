@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap     
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="prod">
+	<typeAlias alias="prodVO" type="kr.or.ddit.vo.ProdVO"/>
+	
+	<sql id="selectAll">
+		select * from prod
+		where prod_delete = 'n'
+	</sql>
+	
+	<select id="getAllProd" resultClass="prodVO">
+		<include refid="selectAll"/>
+	</select>
+	<select id="getDetail" parameterClass="String" resultClass="java.util.HashMap">
+		select
+			a.prod_id as prod_id,
+			a.prod_name as prod_name,
+			a.prod_lgu as prod_lgu,
+			b.lprod_nm as lprod_nm,
+			a.prod_buyer as prod_buyer,
+			a.prod_cost as prod_cost,
+			a.prod_price as prod_price,
+			a.prod_detail as prod_detail,
+			a.prod_outline as prod_outline,
+			a.prod_totalstock as prod_totalstock,
+			a.prod_properstock as prod_properstock,
+			a.prod_properstock as prod_properstock,
+			a.prod_insdate as prod_insdate
+		from prod a, lprod b
+		where a.prod_id = #prod_id#
+		and a.prod_lgu = b.lprod_gu
+	</select>
+	<update id="deleteProd">
+		update prod
+			set prod_delete = 'y'
+			where prod_id = #prod_id#
+	</update>
+	<update id="updateProd" parameterClass="prodVO">
+		update prod
+			set prod_cost = #prod_cost#
+			, prod_price = #prod_price#
+			, prod_detail = #prod_detail#
+			, prod_outline = #prod_outline#
+			, prod_totalstock = #prod_totalstock#
+			, prod_properstock = #prod_properstock#
+			, prod_insdate = #prod_insdate#
+			where prod_id = #prod_id#
+	</update>
+	<select id="checkProd" parameterClass="String" resultClass="int">
+		select count(*)
+		from prod
+		where prod_id = #prod_id#
+	</select>
+	<insert id="insertProd" parameterClass="prodVO">
+		insert into prod(
+			prod_id,
+			prod_name,
+			prod_lgu,
+			prod_buyer,
+			prod_cost,
+			prod_price,
+			prod_outline,
+			prod_detail,
+			prod_totalstock,
+			prod_properstock,
+			prod_insdate
+		)
+		values(
+		    #prod_id#,         
+		    #prod_name#,       
+		    #prod_lgu#,        
+		    #prod_buyer#,      
+		    #prod_cost#,       
+		    #prod_price#,      
+		    #prod_outline#,    
+		    #prod_detail#,     
+		    #prod_totalstock#, 
+		    #prod_properstock#,
+		    #prod_insdate#
+		)
+	</insert>
+		<select id="prodnmList" parameterClass="String" resultClass="prodVO">
+			<include refid="selectAll"/>
+			<isNotEmpty>
+				and PROD_NAME like '%'||#prod_name#||'%'
+			</isNotEmpty>
+	</select>
+	<select id="prodAlone" resultClass="String">
+		select distinct prod_lgu as prod_lgu
+		from prod
+	</select>
+	<select id="getMaxgu" parameterClass="String" resultClass="String">
+		select max(prod_id) as prod_id
+		from prod
+		where prod_id like #prod_id#||'%'
+	</select>
+	
+</sqlMap>

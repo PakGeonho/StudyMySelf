@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap     
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="member">
+	<typeAlias alias="memberVO" type="kr.or.ddit.vo.MemberVO" />
+	<!-- 중복되는 sql문을 간단히 쓰기 위해 sql을 만들고, 각 쿼리문에서 include 속성을 사용해준다. -->
+	<sql id="selectAll">
+		select *
+		from member
+		where mem_delete='n'
+	</sql>
+
+
+	<select id="memberInfo" parameterClass="map" resultClass="memberVO">
+		<include refid="selectAll" />
+		and mem_id = #mem_id#
+		<dynamic>
+			<!-- <isNotEmpty property="mem_pass"> isNotEmpty : ""이거나 null이 아니면 true. 
+				밑의 문장을 수행한다. and mem_pass = #mem_pass# </isNotEmpty> -->
+			<isNotEmpty property="mem_pass" prepend="AND"><!-- 위와 같은 문장. 이제 id만으로도 
+					정보를 검색할 수 있게 되었다. -->
+				mem_pass = #mem_pass#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="memberList" resultClass="memberVO">
+		<include refid="selectAll" />
+	</select>
+
+	<update id="updateMember" parameterClass="memberVO">
+		UPDATE MEMBER
+		SET mem_pass = #mem_pass#
+		,mem_hometel = #mem_hometel#
+		,mem_comtel = #mem_comtel#
+		,mem_hp = #mem_hp#
+		,mem_mail = #mem_mail#
+		,mem_add1 = #mem_add1#
+		,mem_add2 = #mem_add2#
+		,mem_job = #mem_job#
+		,mem_like = #mem_like#
+		WHERE MEM_ID = #mem_id#
+	</update>
+	<update id="deleteMember" parameterClass="map">
+		UPDATE member
+		set
+		mem_delete = 'y'
+		where mem_id=#mem_id#
+	</update>
+	<insert id="insertMember" parameterClass="memberVO">
+		INSERT INTO MEMBER(
+			mem_id,
+			mem_pass,
+			mem_name,
+			mem_regno1,
+			mem_regno2,
+			mem_bir,
+			mem_zip,
+			mem_add1,
+			mem_add2,
+			mem_hometel,
+			mem_comtel,
+			mem_hp,
+			mem_mail,
+			mem_job,
+			mem_like
+		)
+		VALUES(
+			#mem_id#,
+			#mem_pass#,
+			#mem_name#,
+			#mem_regno1#,
+			#mem_regno2#,
+			#mem_bir#,
+			#mem_zip#,
+			#mem_add1#,
+			#mem_add2#,
+			#mem_hometel#,
+			#mem_comtel#,
+			#mem_hp#,
+			#mem_mail#,
+			#mem_job#,
+			#mem_like#
+		)
+	</insert>
+
+
+</sqlMap>

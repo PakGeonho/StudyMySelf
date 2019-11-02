@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>ddit</display-name>
+  
+  <!-- 
+  		해당 웹 어플리케이션 내에서 전역 활용되는 상수
+   -->
+	<!-- 상수 선언 -->
+	<context-param>
+		<param-name>oracleDriver</param-name>
+		<param-value>oracle.jdbc.driver.OracleDriver</param-value><!-- OracleDriver라는 클래스에 접근해준 것. -->
+	</context-param>
+	<context-param>
+		<param-name>oracleURL</param-name>
+		<param-value>jdbc:oracle:thin:@localhost:1521:XE</param-value><!-- thin = OraccleDriver -->
+	</context-param>
+	<context-param>
+		<param-name>mysqlDriver</param-name>
+		<param-value>com.mysql.jdbc.Driver</param-value>
+	</context-param>
+	<context-param>
+		<param-name>mysqlURL</param-name>
+		<param-value>jdbc:mysql://localhost:3306/DB명</param-value><!-- 오라클과는 달리 mysql은 db를 알아서 할당하기 때문에, db이름을 마음대로 정해줄 수 있다. -->
+	</context-param>
+	
+	<!-- 
+		우선순위 : 1. jsp 내 errorPage 선언
+				2. web.xml 내 error page의 exception type 선언
+				3. web.xml 내 error code의 선언(O 얘를 쓰는게 옳다.)
+	 -->
+	<error-page>
+		<exception-type>java.lang.ArithmeticException</exception-type>
+		<location>/error/error500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/error404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error/error500.jsp</location>
+	</error-page>
+</web-app>
